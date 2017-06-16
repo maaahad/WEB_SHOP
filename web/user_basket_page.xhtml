@@ -1,0 +1,74 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+
+    <h:form id="basketForm">
+        <p:growl id="cartMessage"/>
+        <p:dialog header="My Cart" widgetVar="mycartDialog" height="200px" width="800px" resizable="false">
+            <p:dataTable id="basketList" var="order" selectionMode="single" value="#{userBean.ordersList}" rowKey="#{order.orderID}">
+                <f:facet name="header">
+                    Order Details
+                </f:facet>
+                <!-- Need to add ajax listener for row selection and un-selection -->
+                <p:ajax event="rowSelect" listener="#{userBean.onCartRowSelect}" update=":basketForm:cartMessage"/>
+                <p:ajax event="rowUnselect" listener="#{userBean.onCartRowUnselect}" update=":basketForm:cartMessage"/>
+
+                <p:column style="text-align: left" headerText="Order ID">
+                    <h:outputText value="#{order.orderID}"/>
+                </p:column>
+                <p:column style="text-align: left" headerText="Product Name">
+                    <h:outputText value="#{order.gnome.gnomeType}"/>
+                </p:column>
+                <p:column style="text-align: left" headerText="Price per Product">
+                    <h:outputText value="#{order.gnome.gnomePrice}"/>
+                </p:column>
+
+                <p:column style="text-align: left" headerText="Amount">
+                    <h:outputText value="#{order.amountToBuy}"/>
+                </p:column>
+
+                <p:column style="text-align: center">
+                    <p:commandButton id="delete" value="#{bundle.Delete}" onclick="PF('deleteDialog').show()" update=":basketForm:cartMessage" icon="ui-icon-trash"/>
+                </p:column>
+
+                <p:column style="text-align: center">
+                    <p:commandButton id="edit" value="#{bundle.Edit}" icon="ui-icon-pencil"/>
+                </p:column>
+                
+                <f:facet name="footer">
+                    <p:commandButton id="checkout" value="#{bundle.Checkout}" action="#{userBean.toCheckOut()}" oncomplete="PF('checkoutDialog').show()" update=":basketForm:checkout,:basketForm:cartMessage" icon="ui-icon-suitcase"/>
+                </f:facet>
+
+            </p:dataTable>
+        </p:dialog>
+
+        <p:dialog header="Delete Order" widgetVar="deleteDialog" height="50px" resizable="false">
+            <p:commandButton id="confirmDelete" value="#{bundle.Confirm}" action="#{userBean.deleteFromCart()}" oncomplete="PF('deleteDialog').hide()" update=":productForm:availableGnomes,:basketForm:basketList,:basketForm:cartMessage"/>
+        </p:dialog>
+
+        <p:dialog id="checkout" header="Checkout" widgetVar="checkoutDialog" height="120px" resizable="false">
+            <!-- If Cart is not empty -->
+            <p:panelGrid columns="2" columnClasses="label,value" rendered="#{not empty userBean.ordersList}">
+                <h:outputLabel value="#{bundle.Total}" />
+                <h:outputText  value="#{userBean.totalToPay}"/>
+                <p:commandButton id="confirmCheckout" value="#{bundle.Buy}" action="#{userBean.toPayAndBuy()}" oncomplete="PF('checkoutDialog').hide()" update=":basketForm:basketList,:basketForm:cartMessage" icon="ui-icon-check"/>
+                <p:commandButton id="cancelCheckout" value="#{bundle.Cancel}" onclick="PF('checkoutDialog').hide()" icon="ui-icon-cancel"/>
+            </p:panelGrid>
+            <!-- If Cart is empty -->
+            <p:panelGrid columns="2" columnClasses="label,value" rendered="#{empty userBean.ordersList}">
+                <h:outputLabel value="#{bundle.CartEmpty}" />
+                <p:commandButton id="cancelCheckout2" value="#{bundle.OK}" onclick="PF('checkoutDialog').hide(),PF('mycartDialog').hide()" icon="ui-icon-check"/>
+            </p:panelGrid>
+
+        </p:dialog>
+
+        <!-- Need a reference of the product list(here gnomelist) as to update after deletion from the order-->
+        
+        <!-- To make it work properly the list should have been in a dialog, otherwise it will populate the center of the body-->
+    </h:form>
+</html>
+

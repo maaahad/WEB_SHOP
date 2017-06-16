@@ -1,0 +1,19 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="logoutForm">
+        <!-- Error Handling -->
+        <p:growl id="logout-message"/>
+        <!-- This following dialog will be pop up when we click on log in -->
+        <p:dialog header="Logout" widgetVar="logoutDialog" height="80px" resizable="false">
+            <p:panelGrid id="loginPanel" columns="2">
+                <p:commandButton id="confirm" value="#{bundle.Confirm}" action="#{userBean.logOutUser()}" oncomplete="PF('logoutDialog').hide()" update=":navigation-form,:logoutForm:logout-message" icon="ui-icon-check"/>
+                <p:commandButton id="cancel" value="#{bundle.Cancel}" onclick="PF('logoutDialog').hide()" icon="ui-icon-cancel"/>
+            </p:panelGrid>
+        </p:dialog>
+    </h:form>
+</html>
+

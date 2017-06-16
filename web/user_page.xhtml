@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+    <ui:composition template="/home_page.xhtml">
+        <ui:define name="user-info">
+            <ui:include src="user_role_page.xhtml"/>
+        </ui:define>
+
+        <ui:define name="after-login">
+            <p:commandButton id="cartButton" value="#{bundle.Cart}" onclick="PF('mycartDialog').show()" icon="ui-icon-cart"/>
+            <p:separator />
+            <p:commandButton id="logoutButton" value="#{bundle.Logout}" action="#{userBean.logOutUser()}" icon="ui-icon-power"/>
+        </ui:define>
+        <!-- Here we add the cart list of the user -->
+        <ui:define name="body-replace">
+            <!-- Adding the gnome_list-->
+            <ui:include src="gnome_list_page.xhtml"/>
+            <ui:include src="user_basket_page.xhtml"/>
+            <ui:include src="user_list_page.xhtml"/>
+            <ui:include src="add_item_page.xhtml"/>
+        </ui:define>
+    </ui:composition>
+</html>
+

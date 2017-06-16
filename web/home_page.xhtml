@@ -1,0 +1,73 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">   
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <ui:insert name="start_page">
+        <ui:composition template="/my_template.xhtml">
+            <!-- This the title been been replaced by the current page -->
+            <ui:define name="title">
+                <h:outputText value="#{bundle.Company}"/>
+            </ui:define>
+
+            <ui:define name="navigation-bar">
+                <h:form id="navigation-form">
+                    <p:growl id="navMessage"/>
+                    <p:toolbar>
+                        <p:toolbarGroup align="left">
+                            <p:commandButton type="button" value="#{bundle.Home}" icon="ui-icon-home" />
+                            <p:separator />
+                            <!-- Adding user role page and user info -->
+                            <ui:include src="user_role_page.xhtml"/>
+                            <p:separator />
+                        </p:toolbarGroup>
+
+                        <p:toolbarGroup id="nav-toolbar" align="right">
+                            <!-- This is static-->
+                            <p:commandButton  id="productsButton" value="#{bundle.ShowProducts}" onclick="PF('gnomePanel').show()"/>
+                            <p:separator />
+                            <!-- This is dynamic -->
+                            <c:choose>
+                                <c:when test="#{userBean.isOnline}">
+                                    <p:commandButton id="mycartButton" value="#{bundle.Cart}" onclick="PF('mycartDialog').show()" icon="ui-icon-cart"/>
+                                    <p:separator />
+                                    <p:commandButton id="logoutButton" value="#{bundle.Logout}" action="#{userBean.logOutUser()}" icon="ui-icon-power"/>
+                                </c:when>
+                                <c:otherwise>
+                                    <p:commandButton id="registerButton" value="#{bundle.NewUser}" onclick="PF('registrationDialog').show()"/>
+                                    <p:separator />
+                                    <p:commandButton id="loginButton" value="#{bundle.Login}" onclick="PF('loginDialog').show()"/>
+                                </c:otherwise>
+                            </c:choose>
+
+                        </p:toolbarGroup>
+                    </p:toolbar>
+
+                </h:form>
+            </ui:define>
+
+            <ui:define name="body">
+                <ui:insert name="body-replace">
+                    <!-- Adding the gnome_list-->
+                    <ui:include src="gnome_list_page.xhtml"/>
+                    <!-- Keeping the login/registration/logout option if the user is not logged in-->
+                    <ui:include src="login_page.xhtml"/>
+                    <ui:include src="registration_page.xhtml"/>
+                    <!-- Keep the cart Page in case the user is logged in-->
+                    <ui:include src="user_basket_page.xhtml"/>
+                    <!-- showing the registered users as reference -->
+                    <ui:include src="user_list_page.xhtml"/>
+                    <!-- Showing the add item option as reference for the admin-->
+                    <ui:include src="add_item_page.xhtml"/>
+                </ui:insert> 
+            </ui:define>
+
+        </ui:composition>
+
+    </ui:insert>
+
+</html>
+

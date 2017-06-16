@@ -1,0 +1,36 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
+
+    <!-- This will be shown if the user is online -->
+    <c:choose>
+        <c:when test="#{userBean.isOnline}">
+            <!-- Use admin or buyer seller menu based on the role of the user. Need to add actionListener to menuitem-->
+            <!-- For simplicity use pop up dialog for all possible menu item-->
+            <p:menuButton value="admin" rendered="#{userBean.currentUser.userRole eq bundle.Admin}">
+                <p:menuitem value="View Users" onclick="PF('userlistDialog').show()" icon="ui-icon-disk"/>
+                <p:menuitem value="Add Item" onclick="PF('additemDialog').show()" icon="ui-icon-circle-plus"/>
+                <p:menuitem value="Update Item" onclick="PF('gnomePanel').show()" icon="ui-icon-pencil"/>
+            </p:menuButton>
+            <!-- Both buyer and admin have the buyer functionality-->
+            <p:separator />
+            <p:menuButton value="buyer">
+                <p:menuitem value="My details" icon="ui-icon-disk" />
+                <p:menuitem value="Current Order" icon="ui-icon-close" />
+                <p:menuitem value="Orders History" icon="ui-icon-extlink" />
+            </p:menuButton>
+
+            <p:separator />
+            <!-- User Info-->
+            <p:button value="#{userBean.currentUser.userName}" icon="ui-icon-person"/>
+            <p:separator />
+            <h:outputText value=" Role: #{userBean.currentUser.userRole}"/>
+        </c:when>
+    </c:choose>
+
+</html>
+

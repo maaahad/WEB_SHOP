@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>Error</title>
+    </h:head>
+    <h:body>
+        <!-- Here we manage the error handling -->
+        <ui:composition template="homePage.xhtml">
+            <ui:define name="home_body_right_ui">
+                <h1>Error</h1>
+                <c:choose>
+                    <c:when test="#{userBean.exception.cause != null}">
+                        <h3>
+                            <h:outputText value="#{userBean.exception.cause.message}"/>
+                        </h3>
+                    </c:when>
+                    <c:otherwise>
+                        <h3>
+                            <h:outputText value="#{userBean.exception.message}"/>
+                        </h3>
+                    </c:otherwise>
+                </c:choose>
+                <a href="registration.xhtml">Back to the Registration page</a>
+            </ui:define>
+        </ui:composition>
+    </h:body>
+</html>
+

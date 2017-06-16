@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:form id="userlistForm">
+        <!-- Growl component -->
+        <p:growl id="messages" showDetail="false"/>
+        <p:dialog header="Registered Users" widgetVar="userlistDialog" height="300px" resizable="false">
+
+            <p:dataTable id="registeredUsers" var="user" selectionMode="single" value="#{adminBean.usersList}" rowKey="#{user.userName}">
+                <f:facet name="header">
+                    Select to edit user's properties ...
+                </f:facet>
+                <!-- Adding ajax  selection listener.  -->
+                <p:ajax event="rowSelect" listener="#{adminBean.onRowSelect}" update=":userlistForm:messages"/>
+                <p:ajax event="rowUnselect" listener="#{adminBean.onRowUnselect}"/>
+
+                <p:column style="text-align: center" headerText="#{bundle.UserName}">
+                    <h:outputText value="#{user.userName}"/>
+                </p:column>
+
+                <p:column style="text-align: center" headerText="#{bundle.Password}">
+                    <h:outputText value="#{user.password}"/>
+                </p:column>
+
+                <p:column  style="text-align: center" headerText="#{bundle.OnlineStatus}">
+                    <h:outputText value="#{user.onlineStatus}"/>
+                </p:column>
+
+                <p:column style="text-align: center" headerText="#{bundle.PermitStatus}">
+                    <h:outputText value="#{user.permitStatus}"/>
+                </p:column>
+
+                <p:column style="text-align: center" headerText="#{bundle.Role}">
+                    <h:outputText value="#{user.userRole}"/>
+                </p:column>
+
+                <!--
+                <p:column style="text-align: center">
+                    <p:commandButton id="select"  style="background-color: red" process="availableGnomes" update=":form:gnomeDetail"  value="#{bundle.SelectProduct}" oncomplete="PF('gnomeDialog').show()"/>
+                </p:column>
+                -->
+                <p:column style="text-align: center">
+                    <p:commandButton id="edit"  value="#{bundle.Edit}" onclick="PF('userinfoDialog').show()" icon="ui-icon-pencil"/>
+                </p:column>
+
+            </p:dataTable>
+
+        </p:dialog>
+
+        <!-- This is the dialog when a user is selected to edit-->
+        <p:dialog header="Edit user's Info" widgetVar="userinfoDialog" height="200px" resizable="false">
+            
+            <p:panelGrid columns="2" columnClasses="label,value">
+                
+                <p:outputLabel for="onlineStatus" value="#{bundle.OnlineStatus}"/>
+                <p:selectOneMenu id="onlineStatus" value="#{adminBean.userOnlineStatus}" style="width: 125px">
+                    <f:selectItem itemLabel="#{bundle.SelectOne}" itemValue=" " />
+                    <f:selectItem itemLabel="#{bundle.Online}" itemValue="#{bundle.Online}"/>
+                    <f:selectItem itemLabel="#{bundle.Offline}" itemValue="#{bundle.Offline}"/>
+                </p:selectOneMenu>
+                
+                <p:outputLabel for="permitStatus" value="#{bundle.PermitStatus}"/>
+                <p:selectOneMenu id="permitStatus" value="#{adminBean.userPermitStatus}" style="width: 125px">
+                    <f:selectItem itemLabel="#{bundle.SelectOne}" itemValue=" " />
+                    <f:selectItem itemLabel="#{bundle.Permitted}" itemValue="#{bundle.Permitted}"/>
+                    <f:selectItem itemLabel="#{bundle.Banned}" itemValue="#{bundle.Banned}"/>
+                </p:selectOneMenu>
+
+                <p:outputLabel for="userStatus" value="#{bundle.Role}"/>
+                <p:selectOneMenu id="userStatus" value="#{adminBean.userRole}" style="width: 120px">
+                    <f:selectItem itemLabel="#{bundle.SelectOne}" itemValue=" " />
+                    <f:selectItem itemLabel="#{bundle.Admin}" itemValue="#{bundle.Admin}"/>
+                    <f:selectItem itemLabel="#{bundle.Buyer}" itemValue="#{bundle.Buyer}"/>
+                </p:selectOneMenu>
+                
+                <p:commandButton id="confirm"  value="#{bundle.OK}" action="#{adminBean.updateUserInfo()}" update=":userlistForm:messages,:userlistForm:registeredUsers" oncomplete="PF('userinfoDialog').hide()" icon="ui-icon-check"/>
+                <p:commandButton id="cancel"  value="#{bundle.Cancel}" onclick="PF('userinfoDialog').hide()" icon="ui-icon-cancel"/>
+
+            </p:panelGrid>
+        </p:dialog>
+    </h:form>
+</html>
+

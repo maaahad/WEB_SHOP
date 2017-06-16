@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui">
+
+    <h:form id="additemForm">
+        <!-- Growl component -->
+        <p:growl id="messages" showDetail="false"/>
+        <p:dialog header="Add Item" widgetVar="additemDialog" height="300px" resizable="false">
+            <h:panelGrid columns="2" cellpadding="5">
+                
+                <p:outputLabel for="itemName" value="Item: " />
+                <p:inputText id="itemName" value="#{adminBean.productType}"/>
+                <p:outputLabel for="itemPrice" value="Price: " />
+                <p:inputText id="itemPrice" value="#{adminBean.productPrice}"/>
+                <p:outputLabel for="itemTotal" value="Total: " />
+                <p:inputText id="itemTotal" value="#{adminBean.productTotal}"/>
+                <p:outputLabel for="itemAvailable" value="Available: " />
+                <p:inputText id="itemAvailable" value="#{adminBean.productAvailable}"/>
+                
+                <p:commandButton id="confirm"  value="#{bundle.OK}" action="#{adminBean.addNewItem()}"  oncomplete="PF('additemDialog').hide()" update=":productForm:availableGnomes,:additemForm:messages" icon="ui-icon-check"/>
+                <p:commandButton id="cancel"  value="#{bundle.Cancel}" onclick="PF('additemDialog').hide()" icon="ui-icon-cancel"/>
+            </h:panelGrid>
+        </p:dialog>
+    </h:form>
+</html>
+

@@ -1,0 +1,117 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+
+    <h:form id="productForm">
+        <!-- Growl component -->
+        <p:growl id="messages" showDetail="false"/>
+
+        <p:panel id="gnome-Panel" visible="false" header="Products" toggleable="true" closable="true" toggleSpeed="500" closeSpeed="300" widgetVar="gnomePanel" style="margin-top: 10px">
+
+            <p:dataTable id="availableGnomes" var="gnomes" selectionMode="single" value="#{inventoryBean.gnomes}" rowKey="#{gnomes.id}" 
+                         paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink}" 
+                         paginator="true" rows="5" style="margin-bottom: 10px">
+                <f:facet name="header">
+                    Available Gnomes
+                </f:facet>
+                <!-- Adding ajax  selection listener.  -->
+                <p:ajax event="rowSelect" listener="#{userBean.onRowSelect}" update=":productForm:messages"/>
+                <p:ajax event="rowUnselect" listener="#{userBean.onRowUnselect}"/>
+
+                <p:column style="text-align: left" headerText="#{bundle.ProductsID}">
+                    <h:outputText value="#{gnomes.id}"/>
+                </p:column>
+
+                <p:column style="text-align: left" headerText="#{bundle.ProductsType}">
+                    <h:outputText value="#{gnomes.gnomeType}"/>
+                </p:column>
+
+                <p:column  style="text-align: left" headerText="#{bundle.productsPrice}">
+                    <h:outputText value="#{gnomes.gnomePrice}"/>
+                </p:column>
+
+                <p:column style="text-align: left" headerText="#{bundle.ProductsAvailable}">
+                    <h:outputText value="#{gnomes.gnomeAvailable} of #{gnomes.gnomeTotal}"/>
+                </p:column>
+
+                <!-- Show edit item for admin to update amount of the current item -->
+                <c:choose>
+                    <c:when test="#{userBean.isOnline}">
+                        <p:column style="text-align: center" rendered="#{userBean.currentUser.userRole eq bundle.Admin}">
+                            <p:commandButton id="edit"  value="#{bundle.Edit}" onclick="PF('updateitemDialog').show()" icon="ui-icon-pencil"/>
+                        </p:column>
+
+                        <p:column style="text-align: center" rendered="#{userBean.currentUser.userRole eq bundle.Admin}">
+                            <p:commandButton id="delete"  value="#{bundle.Delete}" onclick="PF('deleteitemDialog').show()" icon="ui-icon-trash"/>
+                        </p:column>
+                    </c:when>
+                </c:choose>
+                <!--
+                <p:column style="text-align: center">
+                    <p:commandButton id="select"  style="background-color: red" process="availableGnomes" update=":form:gnomeDetail"  value="#{bundle.SelectProduct}" oncomplete="PF('gnomeDialog').show()"/>
+                </p:column>
+                -->
+
+
+                <f:facet name="footer">
+                    <p:commandButton id="select" process="availableGnomes" update=":productForm:gnomeDetail"  value="#{bundle.SelectProduct}" onclick="PF('gnomeDialog').show()"/>
+                </f:facet>
+
+            </p:dataTable>
+
+            <!-- This is the dialog after a row is selected for showing selected gnome's info and define amount -->
+            <!-- modal="true" not working -->
+            <p:dialog header="Gnome Info" widgetVar="gnomeDialog"  height="200px" resizable="false">
+                <p:outputPanel id="gnomeDetail" style="text-align:center">
+                    <!-- This panel is when a user selected a product(gnome) -->
+                    <p:panelGrid  columns="1" rendered="#{not empty userBean.selectedGnome}" columnClasses="label,value">
+                        <f:facet name="header">
+                            This could be replaced by a Gnome picture 
+                        </f:facet>
+                        <h:outputLabel value="Amount to Buy "/>
+                        <p:inputText id="amount" value="#{userBean.amountToCart}" />
+                        <p:slider for="amount" />
+                        <!-- After hitting the command button I want to hide the dialog box using "PF('widgetVat to be hide').hide()" -->
+                        <!-- Need to update basket list as soon as user added to the basket -->
+                        <p:commandButton id="add" value="#{bundle.AddToCart}" action="#{userBean.addToCart()}" oncomplete="PF('gnomeDialog').hide()" update=":productForm:availableGnomes,:productForm:messages,:basketForm:basketList"/>
+                    </p:panelGrid>
+                    <!-- This panel is for if the user don't select a product (gnome)-->
+                    <p:panelGrid  columns="1" rendered="#{empty userBean.selectedGnome}" columnClasses="label,value">
+                        <h:outputLabel value="Select a product from the list"/>
+                        <p:commandButton value="#{bundle.OK}" onclick="PF('gnomeDialog').hide()" icon="ui-icon-check"/>
+                    </p:panelGrid>
+                </p:outputPanel>
+            </p:dialog>
+
+            <!-- This dialog pop up when a admin want to add or remove amount of a item -->
+
+
+            <p:dialog id="updateItemAmount" header="Update Existing Item Amount" widgetVar="updateitemDialog" height="100px" resizable="false">
+                <p:panelGrid columns="2" columnClasses="label,value">
+                    <h:outputLabel value="#{bundle.Amount}" />
+                    <h:inputText value="#{adminBean.amountToAdd}"/>
+                    <p:commandButton id="confirmEdit" value="#{bundle.OK}" action="#{adminBean.updateExistingProduct()}" oncomplete="PF('updateitemDialog').hide()" update=":productForm:availableGnomes,:productForm:messages" icon="ui-icon-check"/>
+                    <p:commandButton id="cancelEdit" value="#{bundle.Cancel}" onclick="PF('updateitemDialog').hide()" icon="ui-icon-cancel"/> 
+                </p:panelGrid>
+            </p:dialog>
+
+            <!-- This will pop up when the admin want to delete an existing item-->
+            <p:dialog id="deleteItem" header="Delete Existing Item Amount" widgetVar="deleteitemDialog" height="100px" resizable="false">
+                <p:panelGrid columns="2" columnClasses="label,value">
+                    <p:commandButton id="confirmDelete" value="#{bundle.OK}" action="#{adminBean.deleteExistingProduct()}" oncomplete="PF('deleteitemDialog').hide()" update=":productForm:availableGnomes,:productForm:messages,:basketForm:basketList" icon="ui-icon-check"/>
+                    <p:commandButton id="cancelDelete" value="#{bundle.Cancel}" onclick="PF('deleteitemDialog').hide()" icon="ui-icon-cancel"/> 
+                </p:panelGrid>
+            </p:dialog>
+
+            <!-- Keep the cart Page to pass the reference to the delete option for update -->
+            <ui:include src="user_basket_page.xhtml"/>
+        </p:panel>
+    </h:form>
+
+</html>
+

@@ -1,0 +1,49 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title><ui:insert name="title">ACME GNOME</ui:insert></title>
+        <link type="text/css" rel="stylesheet"
+              href="styleR.css" />
+    </h:head>
+    <h:body>
+        <p:layout fullPage="true">
+            <p:layoutUnit id="layout-north" position="north">
+                    <!-- The application's logo and the name of the application is static-->
+                    <p:panelGrid columns="1" style="width:100%">
+                        <f:facet name="header">
+                            <!-- Add the static part -->
+                            <!--<h:graphicImage value="image.png" width="200" height="50" style="margin-left:1%;float: left"/>-->
+                            <h:graphicImage value="online-shopping.gif" width="60" height="60" style="margin-left:1%;float: left"/>
+                            <!-- This is the name of the application -->
+                            <h:outputText value="#{bundle.Company}" style="float: right"/>
+                        </f:facet>
+                        <!-- This is the dynamic part of the header -->
+                        <ui:insert name="navigation-bar"></ui:insert>
+                    </p:panelGrid>
+            </p:layoutUnit>
+            
+            
+
+            <p:layoutUnit id="layout-center" position="center" size="400" minSize="300" maxSize="500" resizable="true">
+                <ui:insert name="body"></ui:insert>
+            </p:layoutUnit>
+            
+            <p:layoutUnit id="layout-left" position="west" size="200" minSize="200" maxSize="200" resizable="false">
+                This is left
+            </p:layoutUnit>
+            
+
+            <p:layoutUnit id="layout-south" position="south" size="50" minSize="50" maxSize="50" resizable="false">
+                Will be added Later
+            </p:layoutUnit>
+
+
+        </p:layout>
+    </h:body>
+</html>
+
