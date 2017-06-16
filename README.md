@@ -1,4 +1,4 @@
-Task Specification:
+#Task Specification:
 In this project I have developed a web app for online shopping from the view point of both buyer and adminstrator. The app worked like an online shop where a buyer can browse through the available products and save it to his shopping cart to buy instantly or later. On the other hand the app can be used for adminstration purpose, for example: an admin can add or remove an existing product along with impose ban to any user.
 Implementation Platform:
 The app was developed on Mac OS X EL Capitan Verion 10:11:4 using Netbeans 8.1 IDE.
